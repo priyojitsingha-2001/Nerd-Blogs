@@ -18,6 +18,25 @@
             </div>
 
             <%- include("./partials/footer.ejs") %>
+                <script>
+                    const trashcan = document.querySelector('a.delete');
+
+                    trashcan.addEventListener('click', (e) => {
+                        //sendig a delete request to the server
+                        const endpoint = `/blogs/${trashcan.dataset.doc}`;
+                        /*we use fetch to send delete request
+                        we get the json data back as response
+                        we parse it to javascript object
+                        we get the redirect path and add it to the window object
+                        */
+                        fetch(endpoint, { method: 'DELETE' })
+                            .then(response => response.json())
+                            .then(data => window.location.href = data.redirect)
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    })
+                </script>
     </body>
 
 </html>

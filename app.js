@@ -75,6 +75,20 @@ app.get('/blogs/:id', (req, res) => {
             console.log(err);
         })
 })
+//delete a blog
+app.delete('/blogs/:id', (req, res) => {
+    //gets the id of the blog
+    const id = req.params.id;
+    //this async method deletes the particular document
+    Blog.findByIdAndDelete(id)
+        .then(result => {
+            //sends the redirect route as json response to the frontend
+            res.json({ redirect: '/blogs' })
+        })
+        .catch(err => {
+            console.log(err);
+        })
+})
 
 //404 page
 app.use((req, res) => {// this is a middleware
