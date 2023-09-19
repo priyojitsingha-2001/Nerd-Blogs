@@ -10,6 +10,7 @@ const dbURI = "mongodb+srv://priyojit:6R1Y4eKOUtSdWAN1@cluster0.dljk7ur.mongodb.
 mongoose.connect(dbURI)
     .then((result) => {
         console.log("Connected to db");
+        //listenig to server, after connection established
         app.listen(3000);
     }).catch(err => {
         console.log(err);
@@ -17,17 +18,18 @@ mongoose.connect(dbURI)
 
 //register view engine
 app.set('view engine', 'ejs');
-// change views folder  app.set('views', 'ejs_views');
+// to change views folder - app.set('views', 'ejs_views');
 
 //middleware and static files
 app.use(express.static('public'));
 app.use(express.urlencoded());// Middleware to parse URL-encoded data
 
-
+// Home page
 app.get('/', (req, res) => {
     res.redirect('/blogs');
 });
 
+//anout page
 app.get('/about', (req, res) => {
     res.render('about', { title: "About" });
 });
@@ -57,9 +59,22 @@ app.post('/blogs', (req, res) => {
         })
 })
 
+//to create a new blog
 app.get('/blogs/create', (req, res) => {
     res.render('create', { title: "Create Blogs" });
 });
+
+//view a single blog
+app.get('/blogs/:id', (req, res) => {
+    const id = req.params.id;
+    Blog.findById(id)
+        .then(result => {
+            res.render('details', { blog: result, title: "Blog Details" });
+        })
+        .catch(err => {
+            console.log(err);
+        })
+})
 
 //404 page
 app.use((req, res) => {// this is a middleware
