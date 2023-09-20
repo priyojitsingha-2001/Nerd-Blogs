@@ -1,61 +1,22 @@
 const express = require('express');
-const Blog = require('../models/blog');//requiring the blog model
+const blogController = require('../controller/blogController'); //requiring blog controller
 const router = express.Router();
 
-//blog routes
-router.get('/blogs', (req, res) => {
-    Blog.find().sort({ createdAt: -1 })
-        .then(result => {
-            res.render('index', { title: "All Blogs", blogs: result });
-        })
-        .catch(err => {
-            console.log(err);
-        })
-})
+/*Blog routes*/
 
-// to add data for the new blog
-router.post('/blogs', (req, res) => {
-    const formData = req.body;
-    const blog = new Blog(formData);
-    blog.save()
-        .then(result => {
-            res.redirect('/blogs');
-        })
-        .catch(err => {
-            console.log(err);
-        })
-})
+// to display all blogs
+router.get('/blogs', blogController.blog_index);
 
-//to create a new blog
-router.get('/blogs/create', (req, res) => {
-    res.render('create', { title: "Create Blogs" });
-});
+// to create a new blog(opens the form to add blog)
+router.get('/blogs/create', blogController.blog_create_get);
 
-//view a blog
-router.get('/blogs/:id', (req, res) => {
-    const id = req.params.id;
-    Blog.findById(id)
-        .then(result => {
-            res.render('details', { blog: result, title: "Blog Details" });
-        })
-        .catch(err => {
-            console.log(err);
-        })
-})
+// to view details of a blog(show full blog)
+router.get('/blogs/:id', blogController.blog_details);
 
-//delete a blog
-router.delete('/blogs/:id', (req, res) => {
-    //gets the id of the blog
-    const id = req.params.id;
-    //this async method deletes the particular document
-    Blog.findByIdAndDelete(id)
-        .then(result => {
-            //sends the redirect route as json response to the frontend
-            res.json({ redirect: '/blogs' })
-        })
-        .catch(err => {
-            console.log(err);
-        })
-})
+// to add a new blog(takes the data and adds it to db)
+router.post('/blogs', blogController.blog_create_post);
+
+//to delete a blog
+router.delete('/blogs/:id', blogController.blog_delete);
 
 module.exports = router;
