@@ -1,12 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const blogRoutes = require('./routes/blogRoutes');
-
+require('dotenv').config()
 //express app
 const app = express();
 
 //Connect to mongodb
-const dbURI = "mongodb+srv://priyojit:6R1Y4eKOUtSdWAN1@cluster0.dljk7ur.mongodb.net/blogsdb?retryWrites=true&w=majority"
+const dbURI = `mongodb+srv://priyojit:${process.env.admin_password}@cluster0.dljk7ur.mongodb.net/blogsdb?retryWrites=true&w=majority`
 mongoose.connect(dbURI)
     .then((result) => {
         console.log("Connected to db");
